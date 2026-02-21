@@ -57,7 +57,6 @@ Create the necesary tables and import the CSV data into the database using the `
 python src/config.py
 ```
 
-6. Import CSV data into the database 
 7. **Run the application**
 ``` bash
 uvicorn src.app:app --reload --port 8080
