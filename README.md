@@ -76,18 +76,18 @@ Access the API at `http://localhost:8080/`
 ```
 Merchant_Analytics/
 ├── src/
-│   ├── app.py
-│   ├── config.py
-│   ├── db.py
-│   ├── analytics.py
-│   └── db_init.sql
+│   ├── app.py          # FastAPI application with defined endpoints
+│   ├── config.py       # Table creation and CSV loading logic
+│   ├── db.py           # Database connection handling
+│   ├── analytics.py    # SQL queries for analytics endpoints
+│   └── db_init.sql     # SQL script to create necessary tables and relations
 ├── data/
 │   ├── activities_20240101.csv
 │   ├── activities_20240102.csv
 │   └── ...
-├── requirements.txt
-├── README.md
-└── .env
+├── requirements.txt  # Python dependencies
+├── README.md 
+└── .env              # Necessary Environment variables 
 ```
 
 ## Test the API
