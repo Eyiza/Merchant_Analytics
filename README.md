@@ -112,3 +112,22 @@ The application provides the following analytics endpoints:
     "total_volume": 181479333.57
 }
 ```
+
+#### GET /analytics/monthly-active-merchants
+- Sample URL: `curl http://localhost:8080/analytics/monthly-active-merchants`
+- Request Arguments: None
+- Response body:
+  - Returns the count of unique merchants with at least one successful event per month.
+``` {
+    "monthly_active_merchants": [
+        {
+            "month": "2024-01",
+            "merchant_count": 150
+        },
+        {
+            "month": "2024-02",
+            "merchant_count": 165
+        }
+    ]
+}
+```

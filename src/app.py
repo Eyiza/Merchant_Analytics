@@ -19,3 +19,8 @@ def top_merchant():
         return {"message": "No successful transactions found."}
     return result
 
+@app.get("/analytics/monthly-active-merchants")
+def monthly_active_merchants():
+    from src.analytics import get_monthly_active_merchants
+    result = get_monthly_active_merchants()
+    return result
