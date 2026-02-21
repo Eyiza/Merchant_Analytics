@@ -68,7 +68,8 @@ This will create the necessary tables and import the data from the CSV files int
 
 7. **Run the application**
 ``` bash
-uvicorn src.app:app --reload --port 8080
+uvicorn src.app:app --reload --port 8080 # Runs the FastAPI application on port 8080 with auto-reload enabled for development.
+unicorn src.app:app --port 8080 # Runs the FastAPI application on port 8080 without auto-reload, suitable for production.
 ```
 Access the API at `http://localhost:8080/`
 
