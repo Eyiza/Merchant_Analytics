@@ -55,9 +55,6 @@ DATABASE_PORT="your_db_port"
 6. Import CSV data into the database 
 7. **Run the application**
 ``` bash
-fastapi dev app.py # For development
-```
-OR
 uvicorn src.app:app --reload --port 8080
 ```
 8. Access the analytics endpoints at `http://localhost:8080/analytics`
