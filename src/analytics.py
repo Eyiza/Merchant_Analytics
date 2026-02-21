@@ -104,3 +104,32 @@ def get_kyc_funnel():
     finally:
         cur.close()
         conn.close()
+
+
+def get_failure_rates():
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute("""
+            SELECT 
+            product,
+            ROUND(
+                100.0 * SUM(CASE WHEN status='FAILED' THEN 1 ELSE 0 END) /
+                NULLIF(SUM(CASE WHEN status IN ('SUCCESS','FAILED') THEN 1 ELSE 0 END),0)
+            ,1) AS failure_rate
+            FROM activities
+            GROUP BY product
+            ORDER BY failure_rate DESC;
+        """)
+
+        rows = cur.fetchall()
+
+        return [
+            {"product": r["product"], "failure_rate": float(r["failure_rate"])}
+            for r in rows
+        ]
+
+    finally:
+        cur.close()
+        conn.close()

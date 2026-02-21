@@ -1,10 +1,9 @@
 from fastapi import FastAPI
-# from fastapi.resources import JSONResponse
-from src.db import get_connection
 from src.analytics import get_top_merchant
 from src.analytics import get_monthly_active_merchants
 from src.analytics import get_product_adoption
 from src.analytics import get_kyc_funnel
+from src.analytics import get_failure_rates
 
 app = FastAPI()
 
@@ -33,3 +32,7 @@ def product_adoption():
 @app.get("/analytics/kyc-funnel")
 def kyc_funnel():
     return get_kyc_funnel()
+
+@app.get("/analytics/failure-rates")
+def failure_rates():
+    return get_failure_rates()

@@ -151,3 +151,40 @@ The application provides the following analytics endpoints:
     "tier_upgrades": 2496
 }
 ```
+
+#### GET /analytics/failure-rates
+- Sample URL: `curl http://localhost:8080/analytics/failure-rates`
+- Request Arguments: None
+- Response body:
+  - Returns failure rate per product: (FAILED / (SUCCESS + FAILED)) x 100. Exclude PENDING. Sort by rate descending.
+``` [
+    {
+        "product": "BILLS",
+        "failure_rate": 5.3
+    },
+    {
+        "product": "CARD_PAYMENT",
+        "failure_rate": 5.2
+    },
+    {
+        "product": "AIRTIME",
+        "failure_rate": 5.2
+    },
+    {
+        "product": "MONIEBOOK",
+        "failure_rate": 5.2
+    },
+    {
+        "product": "POS",
+        "failure_rate": 5.2
+    },
+    {
+        "product": "SAVINGS",
+        "failure_rate": 5.2
+    },
+    {
+        "product": "KYC",
+        "failure_rate": 5.2
+    }
+]
+```
