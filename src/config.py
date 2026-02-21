@@ -1,28 +1,123 @@
 import os
-import psycopg2
-from psycopg2.extras import RealDictCursor
+import csv 
+from datetime import datetime
+import glob 
+from uuid import UUID
+from db import get_connection
 
-# Database configuration
-DATABASE_NAME = os.environ.get("DATABASE_NAME", "merchant_analytics_db")
-DATABASE_USER = os.environ.get("DATABASE_USER", "postgres")
-DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD", "password")
-DATABASE_HOST = os.environ.get("DATABASE_HOST", "localhost")
-DATABASE_PORT = os.environ.get("DATABASE_PORT", "5432")
-
-def get_connection():
-    """Establish a connection to the PostgreSQL database."""
+def parse_uuid(value: str):
     try:
-        connection = psycopg2.connect(
-            # minconn = 1,
-            # maxconn = 10,
-            dbname=DATABASE_NAME,
-            user=DATABASE_USER,
-            password=DATABASE_PASSWORD,
-            host=DATABASE_HOST,
-            port=DATABASE_PORT,
-            cursor_factory=RealDictCursor
-        )
-        return connection
-    except Exception as e:
-        print(f"Error connecting to the database: {e}")
+        return str(UUID(value))
+    except Exception:
         return None
+
+def parse_timestamp(value: str):
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value)
+    except Exception:
+        return None
+
+def parse_amount(value: str):
+    if value is None or value == "":
+        return 0.0
+    try:
+        return float(value)
+    except Exception:
+        return 0.0
+
+def create_tables():
+    """Create the necessary tables in the PostgreSQL database."""
+    conn = get_connection()
+    if conn is None:
+        print("Failed to connect to the database. Cannot create tables.")
+        return
+    
+    cur = conn.cursor()
+    try:
+        cur.execute(open("src/db_init.sql", "r").read())
+        conn.commit()
+        print("Tables created successfully.")
+    except Exception as e:
+        conn.rollback()
+        print(f"Error creating tables: {e}")
+    finally:
+        conn.close()
+        cur.close()
+
+DATA_DIR = 'data'  # Directory where CSV files are stored
+
+def load_csv_to_db():
+    """Load data from a CSV file into the PostgreSQL database."""
+    conn = get_connection()
+    if conn is None:
+        print("Failed to connect to the database. Cannot load data.")
+        return
+    
+    cur = conn.cursor()
+    try:
+        files = glob.glob(os.path.join(DATA_DIR, "activities_*.csv"))
+        print(f"Found {len(files)} files to load. This may take a few minutes...")
+        for file in files:
+            with open(file, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    try:
+                        event_id = parse_uuid(row["event_id"])
+                        # event_id = str(UUID(row["event_id"]))
+                        merchant_id = row["merchant_id"].strip().upper()
+                        # event_timestamp = datetime.fromisoformat(row["event_timestamp"])
+                        event_timestamp = parse_timestamp(row["event_timestamp"])
+                        product = row["product"]
+                        event_type = row["event_type"]
+                        # amount = float(row["amount"] or 0)
+                        amount = parse_amount(row["amount"])
+                        status = row["status"]
+                        channel = row["channel"]
+                        region = row.get("region")
+                        merchant_tier = row.get("merchant_tier")
+
+                        if not event_id or not merchant_id or not event_timestamp:
+                            continue
+
+                        cur.execute(
+                            """
+                            INSERT INTO activities (
+                                event_id, merchant_id, event_timestamp, product, event_type,
+                                amount, status, channel, region, merchant_tier
+                            ) VALUES (
+                                %s, %s, %s, %s, %s,
+                                %s, %s, %s, %s, %s
+                            )
+                            ON CONFLICT (event_id) DO NOTHING
+                            """,
+                            (
+                                event_id,
+                                merchant_id,
+                                event_timestamp,
+                                product,
+                                event_type,
+                                amount,
+                                status,
+                                channel,
+                                region,
+                                merchant_tier,
+                            ),
+                        )
+                    except Exception as e:
+                        # print(f"Skipping row due to error: {e}")
+                        continue
+        conn.commit()
+        print("CSV loading completed.")
+    except Exception as e:
+        conn.rollback()
+        print(f"Error loading CSV: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+
+if __name__ == "__main__":
+    create_tables()
+    load_csv_to_db()

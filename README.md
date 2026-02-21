@@ -35,12 +35,12 @@ With Postgres running, create a `merchant_analytics_db` database:
 ``` bash
 createdb merchant_analytics_db
 ```
-Populate the database with the neccessary relations using:
+<!-- Populate the database with the neccessary relations using:
 
 ``` bash
 psql -U postgres -d merchant_analytics_db -f src/db_init.sql
 ```
-Replace `postgres` with your database user if different. This will create the necessary tables and relations for the application to function properly.
+Replace `postgres` with your database user if different. This will create the necessary tables and relations for the application to function properly. -->
 
 5. **Environment Variables setup**
 Create a `.env` and set up the necessary environment variables:
@@ -50,6 +50,11 @@ DATABASE_USER="your_db_user"
 DATABASE_PASSWORD="your_db_password"
 DATABASE_HOST="your_db_host"
 DATABASE_PORT="your_db_port"
+```
+6. **Import CSV data into the database**
+Create the necesary tables and import the CSV data into the database using the `config.py` script:
+``` bash   
+python src/config.py
 ```
 
 6. Import CSV data into the database 

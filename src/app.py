@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 # from fastapi.resources import JSONResponse
-from src.config import get_connection
+from src.db import get_connection
 
 app = FastAPI()
 
