@@ -14,14 +14,14 @@ def get_top_merchant():
             LIMIT 1;
         """)
 
-        result = cur.fetchone()
+        row = cur.fetchone()
 
-        if not result:
+        if not row:
             return None
 
         return {
-            "merchant_id": result["merchant_id"],
-            "total_volume": float(round(result["total_volume"], 2))
+            "merchant_id": row["merchant_id"],
+            "total_volume": float(round(row["total_volume"], 2))
         }
 
     finally:
@@ -44,8 +44,29 @@ def get_monthly_active_merchants():
             ORDER BY month;
         """)
 
-        results = cur.fetchall()
-        return {row["month"]: row["active_merchants"] for row in results}
+        rows = cur.fetchall()
+        return {row["month"]: row["active_merchants"] for row in rows}
+
+    finally:
+        cur.close()
+        conn.close()
+
+
+def get_product_adoption():
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute("""
+            SELECT 
+                product, COUNT(DISTINCT merchant_id) AS merchant_count
+            FROM activities
+            GROUP BY product
+            ORDER BY merchant_count DESC;
+        """)
+
+        rows = cur.fetchall()
+        return {row["product"]: row["merchant_count"] for row in rows}
 
     finally:
         cur.close()

@@ -119,15 +119,23 @@ The application provides the following analytics endpoints:
 - Response body:
   - Returns the count of unique merchants with at least one successful event per month.
 ``` {
-    "monthly_active_merchants": [
-        {
-            "month": "2024-01",
-            "merchant_count": 150
-        },
-        {
-            "month": "2024-02",
-            "merchant_count": 165
-        }
-    ]
+    "2024-01": 8234, 
+    "2024-02": 8456
+}
+```
+
+#### GET /analytics/product-adoption
+- Sample URL: `curl http://localhost:8080/analytics/product-adoption`
+- Request Arguments: None
+- Response body:
+  - Returns a list of products with the count of unique merchants that have used each product.
+``` {
+    "BILLS": 4379,
+    "SAVINGS": 4368,
+    "POS": 4348,
+    "AIRTIME": 4277,
+    "MONIEBOOK": 4267,
+    "CARD_PAYMENT": 4233,
+    "KYC": 4167
 }
 ```

@@ -2,6 +2,8 @@ from fastapi import FastAPI
 # from fastapi.resources import JSONResponse
 from src.db import get_connection
 from src.analytics import get_top_merchant
+from src.analytics import get_monthly_active_merchants
+from src.analytics import get_product_adoption
 
 app = FastAPI()
 
@@ -21,6 +23,9 @@ def top_merchant():
 
 @app.get("/analytics/monthly-active-merchants")
 def monthly_active_merchants():
-    from src.analytics import get_monthly_active_merchants
-    result = get_monthly_active_merchants()
-    return result
+    return get_monthly_active_merchants()
+
+@app.get("/analytics/product-adoption")
+def product_adoption():
+    return get_product_adoption()
+
