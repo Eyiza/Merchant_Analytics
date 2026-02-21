@@ -90,20 +90,10 @@ Merchant_Analytics/
 └── .env              # Necessary Environment variables 
 ```
 
-## Test the API
-Use the following commands to test the API endpoints:
-```bash
-curl http://localhost:8080/analytics/top-merchant
-curl http://localhost:8080/analytics/monthly-active-merchants
-curl http://localhost:8080/analytics/product-adoption
-curl http://localhost:8080/analytics/kyc-funnel
-curl http://localhost:8080/analytics/failure-rates
-```
-
 ### Endpoints
 The application provides the following analytics endpoints:
 #### GET /analytics/top-merchant
-- Sample URL: `curl http://127.0.0.1:5000/analytics/top-merchant`
+- Sample URL: `curl http://127.0.0.1:8080/analytics/top-merchant`
 - Request Arguments: None
 - Response body:
   - Returns the merchant with the highest total successful transaction amount across ALL products.
