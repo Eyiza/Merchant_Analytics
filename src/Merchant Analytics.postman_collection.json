@@ -1,0 +1,149 @@
+{
+  "info": {
+    "_postman_id": "306488fa-2cb1-45aa-8219-6d93808290ce",
+    "name": "Merchant Analytics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17701170"
+  },
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{dev_host}}",
+          "host": [
+            "{{dev_host}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Top Merchant",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{dev_host}}/analytics/top-merchant",
+          "host": [
+            "{{dev_host}}"
+          ],
+          "path": [
+            "analytics",
+            "top-merchant"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Monthly Active Merchants",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{dev_host}}/analytics/monthly-active-merchants",
+          "host": [
+            "{{dev_host}}"
+          ],
+          "path": [
+            "analytics",
+            "monthly-active-merchants"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Product Adoption",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{dev_host}}/analytics/product-adoption",
+          "host": [
+            "{{dev_host}}"
+          ],
+          "path": [
+            "analytics",
+            "product-adoption"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "KYC Funnel",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/analytics/kyc-funnel",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "analytics",
+            "kyc-funnel"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Failure Rates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{dev_host}}/analytics/failure-rates",
+          "host": [
+            "{{dev_host}}"
+          ],
+          "path": [
+            "analytics",
+            "failure-rates"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "dev_host",
+      "value": ""
+    }
+  ]
+}

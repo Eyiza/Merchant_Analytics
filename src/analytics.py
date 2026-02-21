@@ -17,7 +17,7 @@ def get_top_merchant():
         row = cur.fetchone()
 
         if not row:
-            return None
+            return {"merchant_id": None, "total_volume": 0.00}
 
         return {
             "merchant_id": row["merchant_id"],
@@ -124,11 +124,17 @@ def get_failure_rates():
         """)
 
         rows = cur.fetchall()
-
-        return [
-            {"product": r["product"], "failure_rate": float(r["failure_rate"])}
-            for r in rows
-        ]
+        
+        result = []
+        for item in rows:
+            rate = item["failure_rate"]
+            if rate is None:
+                rate = 0.0
+            result.append({
+                "product": item["product"],
+                "failure_rate": float(rate),
+            })
+        return result
 
     finally:
         cur.close()

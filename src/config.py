@@ -4,6 +4,7 @@ from datetime import datetime
 import glob 
 from uuid import UUID
 from db import get_connection
+from psycopg2.extras import execute_batch
 
 def parse_uuid(value: str):
     try:
@@ -59,30 +60,47 @@ def load_csv_to_db():
     try:
         files = glob.glob(os.path.join(DATA_DIR, "activities_*.csv"))
         print(f"Found {len(files)} files to load. This may take a few minutes...")
+
+        batch = []
+        batch_size = 5000
+
         for file in files:
             with open(file, "r", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    try:
-                        event_id = parse_uuid(row["event_id"])
-                        # event_id = str(UUID(row["event_id"]))
-                        merchant_id = row["merchant_id"].strip().upper()
-                        # event_timestamp = datetime.fromisoformat(row["event_timestamp"])
-                        event_timestamp = parse_timestamp(row["event_timestamp"])
-                        product = row["product"]
-                        event_type = row["event_type"]
-                        # amount = float(row["amount"] or 0)
-                        amount = parse_amount(row["amount"])
-                        status = row["status"]
-                        channel = row["channel"]
-                        region = row.get("region")
-                        merchant_tier = row.get("merchant_tier")
+                    # try:
+                    event_id = parse_uuid(row["event_id"])
+                    # event_id = str(UUID(row["event_id"]))
+                    merchant_id = row["merchant_id"]
+                    # event_timestamp = datetime.fromisoformat(row["event_timestamp"])
+                    event_timestamp = parse_timestamp(row["event_timestamp"])
+                    product = row["product"]
+                    event_type = row["event_type"]
+                    # amount = float(row["amount"] or 0)
+                    amount = parse_amount(row["amount"])
+                    status = row["status"]
+                    channel = row["channel"]
+                    region = row.get("region")
+                    merchant_tier = row.get("merchant_tier")
 
-                        if not event_id or not merchant_id or not event_timestamp:
-                            continue
+                    if not event_id or not merchant_id or not event_timestamp:
+                        continue
 
-                        cur.execute(
-                            """
+                    batch.append((
+                        event_id,
+                        merchant_id,
+                        event_timestamp,
+                        product,
+                        event_type,
+                        amount,
+                        status,
+                        channel,
+                        region,
+                        merchant_tier
+                    ))
+
+                    if len(batch) >= batch_size:
+                        execute_batch(cur, """
                             INSERT INTO activities (
                                 event_id, merchant_id, event_timestamp, product, event_type,
                                 amount, status, channel, region, merchant_tier
@@ -91,23 +109,29 @@ def load_csv_to_db():
                                 %s, %s, %s, %s, %s
                             )
                             ON CONFLICT (event_id) DO NOTHING
-                            """,
-                            (
-                                event_id,
-                                merchant_id,
-                                event_timestamp,
-                                product,
-                                event_type,
-                                amount,
-                                status,
-                                channel,
-                                region,
-                                merchant_tier,
-                            ),
-                        )
-                    except Exception as e:
-                        # print(f"Skipping row due to error: {e}")
-                        continue
+                            """, batch)
+                        batch.clear()
+                    
+                    
+                          
+                    # except Exception as e:
+                    #     # print(f"Skipping row due to error: {e}")
+                    #     continue
+        # Insert remaining rows
+        if batch:
+            execute_batch(
+                cur,
+                """
+                INSERT INTO activities (
+                    event_id, merchant_id, event_timestamp,
+                    product, event_type, amount,
+                    status, channel, region, merchant_tier
+                ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (event_id) DO NOTHING
+                """,
+                batch
+            )
+
         conn.commit()
         print("CSV loading completed.")
     except Exception as e:

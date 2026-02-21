@@ -109,8 +109,7 @@ The application provides the following analytics endpoints:
 - Response body:
   - Returns the count of unique merchants with at least one successful event per month.
 ``` {
-    "2024-01": 8234, 
-    "2024-02": 8456
+    "2024-01":9847
 }
 ```
 
@@ -178,3 +177,8 @@ The application provides the following analytics endpoints:
     }
 ]
 ```
+
+You can also test using the [Postman Collection](src/Merchant%20Analytics.postman_collection.json) provided in the repository.
+
+## Author
+- Name: Michael, Precious Eyizomorihi
