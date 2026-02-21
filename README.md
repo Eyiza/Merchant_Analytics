@@ -14,6 +14,7 @@ This microservice processes merchant activity data from CSV files and provides a
 git clone https://github.com/Eyiza/Merchant_Analytics.git
 cd Merchant_Analytics
 ```
+
 2. **Virtual Environment** - This keeps your dependencies for your project separate and organized. 
 Initialize and activate a virtualenv using:
 ``` bash
@@ -24,6 +25,7 @@ Note - In Windows, the `env` does not have a `bin` directory. Use the analogous 
 ``` bash
 env/Scripts/activate
 ```
+
 3. **PIP Dependencies** - Once the virtual environment is setup and running, install the required dependencies by navigating to the repo's directory on the terminal and running:
 ``` bash
 pip install -r requirements.txt
@@ -51,17 +53,42 @@ DATABASE_PASSWORD="your_db_password"
 DATABASE_HOST="your_db_host"
 DATABASE_PORT="your_db_port"
 ```
-6. **Import CSV data into the database**
+
+6. **Data Ingestion**
+The application expects CSV files containing merchant activity data. Each file should be named in the format `activities_YYYYMMDD.csv` and placed in a `data/` directory within the repository.
+
+6. **Create Tables and Import CSV data into the database**
 Create the necesary tables and import the CSV data into the database using the `config.py` script:
 ``` bash   
 python src/config.py
 ```
+This will create the necessary tables and import the data from the CSV files into the database. The script reads all CSV files in the `data/` directory, parses the data, and inserts it into the `activities` table in batches for efficiency.
 
 7. **Run the application**
 ``` bash
 uvicorn src.app:app --reload --port 8080
 ```
-8. Access the analytics endpoints at `http://localhost:8080/analytics`
+Access the API at `http://localhost:8080/`
+
+
+
+## Project Structure
+```
+Merchant_Analytics/
+├── src/
+│   ├── app.py
+│   ├── config.py
+│   ├── db.py
+│   ├── analytics.py
+│   └── db_init.sql
+├── data/
+│   ├── activities_20240101.csv
+│   ├── activities_20240102.csv
+│   └── ...
+├── requirements.txt
+├── README.md
+└── .env
+```
 
 ## Test the API
 Use the following commands to test the API endpoints:
@@ -71,4 +98,17 @@ curl http://localhost:8080/analytics/monthly-active-merchants
 curl http://localhost:8080/analytics/product-adoption
 curl http://localhost:8080/analytics/kyc-funnel
 curl http://localhost:8080/analytics/failure-rates
+```
+
+### Endpoints
+The application provides the following analytics endpoints:
+#### GET /analytics/top-merchant
+- Sample URL: `curl http://127.0.0.1:5000/analytics/top-merchant`
+- Request Arguments: None
+- Response body:
+  - Returns the merchant with the highest total successful transaction amount across ALL products.
+``` {
+    "merchant_id": "MRC-009405",
+    "total_volume": 181479333.57
+}
 ```
