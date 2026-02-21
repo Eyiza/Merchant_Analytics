@@ -55,7 +55,9 @@ DATABASE_PORT="your_db_port"
 ```
 
 6. **Data Ingestion**
-The application expects CSV files containing merchant activity data. Each file should be named in the format `activities_YYYYMMDD.csv` and placed in a `data/` directory within the repository.
+The application expects CSV files containing merchant activity data. Each file should be named in the format `activities_YYYYMMDD.csv` and placed in a `data/` directory within the repository. Assumptions about the CSV files:
+- The CSV files are well-formed and contain the expected columns: `event_id`, `merchant_id`, `event_timestamp`, `product`, `event_type`, and `amount`.
+- The `event_type` column contains only the values "SUCCESS", "FAILED", or "PENDING".
 
 6. **Create Tables and Import CSV data into the database**
 Create the necesary tables and import the CSV data into the database using the `config.py` script:

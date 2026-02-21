@@ -68,15 +68,11 @@ def load_csv_to_db():
             with open(file, "r", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    # try:
                     event_id = parse_uuid(row["event_id"])
-                    # event_id = str(UUID(row["event_id"]))
                     merchant_id = row["merchant_id"]
-                    # event_timestamp = datetime.fromisoformat(row["event_timestamp"])
                     event_timestamp = parse_timestamp(row["event_timestamp"])
                     product = row["product"]
                     event_type = row["event_type"]
-                    # amount = float(row["amount"] or 0)
                     amount = parse_amount(row["amount"])
                     status = row["status"]
                     channel = row["channel"]
@@ -111,12 +107,7 @@ def load_csv_to_db():
                             ON CONFLICT (event_id) DO NOTHING
                             """, batch)
                         batch.clear()
-                    
-                    
-                          
-                    # except Exception as e:
-                    #     # print(f"Skipping row due to error: {e}")
-                    #     continue
+
         # Insert remaining rows
         if batch:
             execute_batch(
