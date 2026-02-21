@@ -71,3 +71,36 @@ def get_product_adoption():
     finally:
         cur.close()
         conn.close()
+    
+
+
+def get_kyc_funnel():
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute("""
+            SELECT 
+            COUNT(DISTINCT CASE 
+                WHEN event_type='DOCUMENT_SUBMITTED' THEN merchant_id 
+            END) AS documents_submitted,
+
+            COUNT(DISTINCT CASE 
+                WHEN event_type='VERIFICATION_COMPLETED' THEN merchant_id 
+            END) AS verifications_completed,
+
+            COUNT(DISTINCT CASE 
+                WHEN event_type='TIER_UPGRADE' THEN merchant_id 
+            END) AS tier_upgrades
+
+            FROM activities
+            WHERE product='KYC'
+            AND status='SUCCESS';
+        """)
+
+        row = cur.fetchone()
+        return dict(row)
+
+    finally:
+        cur.close()
+        conn.close()

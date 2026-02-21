@@ -4,6 +4,7 @@ from src.db import get_connection
 from src.analytics import get_top_merchant
 from src.analytics import get_monthly_active_merchants
 from src.analytics import get_product_adoption
+from src.analytics import get_kyc_funnel
 
 app = FastAPI()
 
@@ -29,3 +30,6 @@ def monthly_active_merchants():
 def product_adoption():
     return get_product_adoption()
 
+@app.get("/analytics/kyc-funnel")
+def kyc_funnel():
+    return get_kyc_funnel()

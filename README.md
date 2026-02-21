@@ -128,7 +128,7 @@ The application provides the following analytics endpoints:
 - Sample URL: `curl http://localhost:8080/analytics/product-adoption`
 - Request Arguments: None
 - Response body:
-  - Returns a list of products with the count of unique merchants that have used each product.
+  - Returns unique merchant count per product (sorted by count, highest first).
 ``` {
     "BILLS": 4379,
     "SAVINGS": 4368,
@@ -137,5 +137,17 @@ The application provides the following analytics endpoints:
     "MONIEBOOK": 4267,
     "CARD_PAYMENT": 4233,
     "KYC": 4167
+}
+```
+
+#### GET /analytics/kyc-funnel
+- Sample URL: `curl http://localhost:8080/analytics/kyc-funnel`
+- Request Arguments: None
+- Response body:
+  - Returns the KYC conversion funnel (unique merchants at each stage, successful events only).
+``` {
+    "documents_submitted": 3760,
+    "verifications_completed": 3389,
+    "tier_upgrades": 2496
 }
 ```
